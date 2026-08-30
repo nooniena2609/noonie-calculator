@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#fff8f8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Noonie Calc">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <title>Noonie Proxy Calculator</title>
+
+  <style>
+    :root {
+      --pink: #e18a92;
+      --burgundy: #973844;
+      --cream: #fff8f8;
+      --light-pink: #efbcbf;
+      --soft: #f9e5e7;
+      --text: #56242b;
+      --shadow: rgba(151,56,68,0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: var(--cream);
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #fff8f8 0%, #fceff0 100%);
+      overscroll-behavior: none;
+    }
+
+    button, input, textarea {
+      font-family: inherit;
+    }
+
+    button {
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+
+    .app {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding:
+        calc(env(safe-area-inset-top) + 3px)
+        3px
+        calc(env(safe-area-inset-bottom) + 8px);
+    }
+
+    /* TOP TABS */
+    .tabs {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      height: 96px;
+      overflow: hidden;
+      background: white;
+      border: 2px solid var(--light-pink);
+      border-radius: 24px;
+      box-shadow: 0 7px 22px var(--shadow);
+      margin-bottom: 8px;
+    }
+
+    .tab {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+      background: white;
+      color: var(--burgundy);
+      font-size: clamp(18px, 4.7vw, 24px);
+      font-weight: 900;
+      padding: 12px 4px;
+    }
+
+    .tab + .tab {
+      border-left: 1px solid #f0c4c8;
+    }
+
+    .tab.active {
+      background: var(--burgundy);
+      color: white;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .title {
+      width: 100%;
+      text-align: center;
+      color: var(--burgundy);
+      font-size: clamp(28px, 7vw, 38px);
+      font-weight: 900;
+      line-height: 1.05;
+      margin: 7px 0 4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #9b686f;
+      font-size: 17px;
+      font-weight: 750;
+      margin: 0 0 10px;
+    }
+
+    .card {
+      width: 100%;
+      background: rgba(255,255,255,0.97);
+      border: 1px solid rgba(225,138,146,0.28);
+      border-radius: 24px;
+      box-shadow: 0 8px 24px var(--shadow);
+      padding: 14px 11px;
+      margin: 0 0 8px;
+    }
+
+    .label {
+      color: var(--burgundy);
+      font-size: 21px;
+      font-weight: 900;
+      margin: 0 0 7px;
+    }
+
+    /* PROXY */
+    .proxy-input-box {
+      width: 100%;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cream);
+      border: 3px solid var(--light-pink);
+      border-radius: 24px;
+      padding: 15px 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .proxy-input-center {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .proxy-currency {
+      flex-shrink: 0;
+      color: var(--pink);
+      font-size: clamp(56px, 15vw, 88px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    #amount {
+      width: min(72%, 560px);
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--burgundy);
+      font-size: clamp(72px, 18vw, 108px);
+      font-weight: 900;
+      line-height: 1;
+      text-align: center;
+      padding: 0;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    #amount::placeholder {
+      color: #ddb4b9;
+      opacity: 1;
+    }
+
+    .rate {
+      text-align: center;
+      color: #a5626b;
+      font-size: 28px;
+      font-weight: 900;
+      margin: 0 0 10px;
+    }
+
+    .result-box {
+      width: 100%;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--burgundy);
+      color: white;
+      border-radius: 24px;
+      text-align: center;
+      padding: 18px 10px;
+      margin: 0 0 14px;
+    }
+
+    .result-label {
+      font-size: 16px;
+      font-weight: 700;
+      opacity: 0.86;
+      margin-bottom: 4px;
+    }
+
+    #result {
+      width: 100%;
+      font-size: clamp(72px, 18vw, 108px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -2px;
+      overflow-wrap: anywhere;
+    }
+
+    #exactResult {
+      font-size: 14px;
+      opacity: 0.82;
+      margin-top: 7px;
+    }
+
+    .joiner-title {
+      text-align: center;
+      color: var(--burgundy);
+      font-size: 24px;
+      font-weight: 900;
+      margin: 12px 0 9px;
+    }
+
+    .joiner-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+
+    .joiner-box {
+      min-width: 0;
+      background: var(--soft);
+      border: 2px solid var(--light-pink);
+      border-radius: 19px;
+      text-align: center;
+      padding: 14px 3px;
+    }
+
+    .joiner-fee {
+      color: #a05c65;
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .joiner-value {
+      color: var(--burgundy);
+      font-size: clamp(24px, 7vw, 36px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .joiner-note {
+      color: #a87980;
+      font-size: 10px;
+      font-weight: 750;
+      margin-top: 6px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 116px;
+      resize: vertical;
+      background: var(--cream);
+      border: 3px solid #f0c7cb;
+      border-radius: 20px;
+      color: var(--text);
+      outline: none;
+      padding: 14px;
+      font-size: 18px;
+    }
+
+    textarea:focus { border-color: var(--pink); }
+
+    .wide-button {
+      width: 100%;
+      border: 0;
+      border-radius: 19px;
+      padding: 18px 14px;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .save {
+      margin-top: 11px;
+      background: var(--pink);
+      color: white;
+    }
+
+    .secondary {
+      margin-top: 8px;
+      background: var(--soft);
+      color: var(--burgundy);
+    }
+
+    .status {
+      min-height: 18px;
+      text-align: center;
+      color: var(--burgundy);
+      font-size: 13px;
+      font-weight: 750;
+      margin-top: 7px;
+    }
+
+    .section-title {
+      color: var(--burgundy);
+      font-size: 27px;
+      font-weight: 900;
+      margin: 0 0 11px;
+    }
+
+    .history-item {
+      width: 100%;
+      background: var(--cream);
+      border: 1px solid #f0d2d5;
+      border-radius: 18px;
+      padding: 13px;
+      margin-bottom: 8px;
+    }
+
+    .history-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .history-calc {
+      color: var(--burgundy);
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .history-date {
+      color: #a88388;
+      font-size: 11px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .history-note {
+      color: #765259;
+      font-size: 15px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin-top: 6px;
+    }
+
+    .delete-btn {
+      width: auto;
+      border: 0;
+      border-radius: 11px;
+      background: #f6e0e2;
+      color: var(--burgundy);
+      padding: 7px 10px;
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .empty {
+      text-align: center;
+      color: #aa858a;
+      font-size: 15px;
+      padding: 18px 4px;
+    }
+
+    .tiny {
+      text-align: center;
+      color: #b58e93;
+      font-size: 12px;
+      margin: 6px 0 0;
+    }
+
+    /* REGULAR CALCULATOR — LARGE KEYPAD */
+    #calculatorPage {
+      height: calc(100dvh - 111px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      min-height: 640px;
+    }
+
+    .calculator-card {
+      height: 100%;
+      display: grid;
+      grid-template-rows: minmax(180px, 35%) minmax(0, 65%);
+      gap: 8px;
+      padding: 8px;
+      border-radius: 25px;
+      margin: 0;
+    }
+
+    .calc-display {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      background: var(--burgundy);
+      color: white;
+      border-radius: 26px;
+      padding: 16px 20px 22px;
+      overflow: hidden;
+    }
+
+    #calcExpression {
+      width: 100%;
+      min-height: 36px;
+      text-align: right;
+      color: #f2d6d9;
+      font-size: clamp(26px, 6vw, 40px);
+      font-weight: 650;
+      overflow-wrap: anywhere;
+      margin-bottom: 3px;
+    }
+
+    #calcResult {
+      width: 100%;
+      text-align: right;
+      color: white;
+      font-size: clamp(70px, 18vw, 112px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -2px;
+      overflow-wrap: anywhere;
+    }
+
+    .calc-buttons {
+      width: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    .calc-btn {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      border: 0;
+      border-radius: 24px;
+      background: white;
+      color: var(--burgundy);
+      font-size: clamp(40px, 10vw, 64px);
+      font-weight: 650;
+      box-shadow: 0 3px 11px rgba(151,56,68,0.09);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .calc-btn:active { transform: scale(0.97); }
+    .calc-btn.special { background: var(--soft); }
+    .calc-btn.operator {
+      background: var(--light-pink);
+      color: var(--burgundy);
+    }
+    .calc-btn.equals {
+      background: var(--burgundy);
+      color: white;
+    }
+
+    /* QUICK */
+    .quick-header {
+      text-align: center;
+      margin: 8px 0 12px;
+    }
+
+    .quick-title {
+      color: var(--burgundy);
+      font-size: 32px;
+      font-weight: 900;
+    }
+
+    .quick-subtitle {
+      color: #9b686f;
+      font-size: 18px;
+      font-weight: 750;
+      margin-top: 4px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .quick-item {
+      position: relative;
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: white;
+      border: 2px solid var(--light-pink);
+      border-radius: 19px;
+      padding: 10px 12px;
+      box-shadow: 0 4px 12px rgba(151,56,68,0.08);
+    }
+
+    .quick-left {
+      color: var(--burgundy);
+      font-size: clamp(22px, 6vw, 30px);
+      font-weight: 900;
+    }
+
+    .quick-right {
+      color: var(--pink);
+      font-size: clamp(24px, 6.5vw, 32px);
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .custom-quick { padding-right: 44px; }
+
+    .quick-delete {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 50%;
+      background: #f7e1e3;
+      color: var(--burgundy);
+      font-size: 19px;
+      font-weight: 900;
+      padding: 0;
+    }
+
+    .quick-add-card {
+      width: 100%;
+      background: white;
+      border: 2px solid var(--light-pink);
+      border-radius: 22px;
+      margin-top: 12px;
+      padding: 10px;
+    }
+
+    .quick-add-toggle {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      background: var(--burgundy);
+      color: white;
+      padding: 19px 12px;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .quick-add-panel {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .quick-add-panel.open { display: block; }
+
+    .quick-input-wrap {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background: var(--cream);
+      border: 3px solid var(--light-pink);
+      border-radius: 18px;
+      padding: 8px 12px;
+      min-height: 82px;
+    }
+
+    .quick-input-currency {
+      color: var(--pink);
+      font-size: 32px;
+      font-weight: 900;
+      margin-right: 8px;
+    }
+
+    #quickCustomInput {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--burgundy);
+      font-size: 38px;
+      font-weight: 900;
+      padding: 0;
+    }
+
+    .quick-save-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      background: var(--pink);
+      color: white;
+      padding: 18px 12px;
+      margin-top: 8px;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    #quickStatus {
+      min-height: 20px;
+      text-align: center;
+      color: var(--burgundy);
+      font-size: 13px;
+      font-weight: 750;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 430px) {
+      .tabs { height: 92px; }
+      .card {
+        padding-left: 9px;
+        padding-right: 9px;
+      }
+      .proxy-input-box,
+      .result-box { min-height: 148px; }
+      .joiner-grid { gap: 5px; }
+      .joiner-fee { font-size: 12px; }
+
+      #calculatorPage {
+        height: calc(100dvh - 107px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      }
+
+      .calculator-card {
+        grid-template-rows: minmax(170px, 34%) minmax(0, 66%);
+      }
+
+      .calc-buttons { gap: 6px; }
+      .quick-item {
+        min-height: 88px;
+        padding-left: 9px;
+        padding-right: 9px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <div class="tabs">
+    <button type="button" id="proxyTab" class="tab active" data-page="proxy">PROXY</button>
+    <button type="button" id="calculatorTab" class="tab" data-page="calculator">CALCULATOR</button>
+    <button type="button" id="quickTab" class="tab" data-page="quick">QUICK</button>
+  </div>
+
+  <div id="proxyPage" class="page active">
+    <div class="title">𓏸𓈒꒰ঌ Proxy Calculator ໒꒱𓈒𓏸</div>
+    <div class="subtitle">CNY × 0.18 = USD</div>
+
+    <div class="card">
+      <div class="label">CNY amount</div>
+
+      <div class="proxy-input-box">
+        <div class="proxy-input-center">
+          <span class="proxy-currency">¥</span>
+          <input id="amount" type="text" inputmode="decimal" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="0">
+        </div>
+      </div>
+
+      <div class="rate">× 0.18</div>
+
+      <div class="result-box">
+        <div class="result-label">Amount to pay</div>
+        <div id="result">$0.00</div>
+        <div id="exactResult"></div>
+      </div>
+
+      <div class="joiner-title">Suggested Joiner Price</div>
+
+      <div class="joiner-grid">
+        <div class="joiner-box">
+          <div class="joiner-fee">+ €0,20</div>
+          <div id="joiner20" class="joiner-value">€0,00</div>
+          <div class="joiner-note">exact</div>
+        </div>
+
+        <div class="joiner-box">
+          <div class="joiner-fee">+ €0,25</div>
+          <div id="joiner25" class="joiner-value">€0,00</div>
+          <div class="joiner-note">rounded up</div>
+        </div>
+
+        <div class="joiner-box">
+          <div class="joiner-fee">+ €1,00</div>
+          <div id="joiner100" class="joiner-value">€0,00</div>
+          <div class="joiner-note">exact</div>
+        </div>
+      </div>
+
+      <div class="label">Note</div>
+      <textarea id="note" placeholder="Example: Batch 76 / proxy payment / items..."></textarea>
+
+      <button type="button" class="wide-button save" id="saveHistoryButton">Save to history</button>
+      <button type="button" class="wide-button secondary" id="newCalculationButton">New calculation</button>
+      <div id="status" class="status"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">History</div>
+      <div id="history"><div class="empty">No saved calculations yet.</div></div>
+      <button type="button" class="wide-button secondary" id="clearHistoryButton">Clear all history</button>
+    </div>
+
+    <div class="tiny">Proxy rate: × 0.18</div>
+  </div>
+
+  <div id="calculatorPage" class="page">
+    <div class="card calculator-card">
+      <div class="calc-display">
+        <div id="calcExpression"></div>
+        <div id="calcResult">0</div>
+      </div>
+
+      <div id="calcButtons" class="calc-buttons">
+        <button type="button" class="calc-btn special" data-calc="backspace">⌫</button>
+        <button type="button" class="calc-btn special" data-calc="clear">AC</button>
+        <button type="button" class="calc-btn special" data-calc="percent">%</button>
+        <button type="button" class="calc-btn operator" data-operator="÷">÷</button>
+
+        <button type="button" class="calc-btn" data-number="7">7</button>
+        <button type="button" class="calc-btn" data-number="8">8</button>
+        <button type="button" class="calc-btn" data-number="9">9</button>
+        <button type="button" class="calc-btn operator" data-operator="×">×</button>
+
+        <button type="button" class="calc-btn" data-number="4">4</button>
+        <button type="button" class="calc-btn" data-number="5">5</button>
+        <button type="button" class="calc-btn" data-number="6">6</button>
+        <button type="button" class="calc-btn operator" data-operator="-">−</button>
+
+        <button type="button" class="calc-btn" data-number="1">1</button>
+        <button type="button" class="calc-btn" data-number="2">2</button>
+        <button type="button" class="calc-btn" data-number="3">3</button>
+        <button type="button" class="calc-btn operator" data-operator="+">+</button>
+
+        <button type="button" class="calc-btn special" data-calc="sign">+/−</button>
+        <button type="button" class="calc-btn" data-number="0">0</button>
+        <button type="button" class="calc-btn" data-calc="decimal">,</button>
+        <button type="button" class="calc-btn equals" data-calc="equals">=</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="quickPage" class="page">
+    <div class="quick-header">
+      <div class="quick-title">Quick Conversions</div>
+      <div class="quick-subtitle">CNY × 0.18</div>
+    </div>
+
+    <div id="quickGrid" class="quick-grid"></div>
+
+    <div class="quick-add-card">
+      <button type="button" id="quickAddToggle" class="quick-add-toggle">+ Add Quick Conversion</button>
+
+      <div id="quickAddPanel" class="quick-add-panel">
+        <div class="quick-input-wrap">
+          <span class="quick-input-currency">¥</span>
+          <input id="quickCustomInput" type="text" inputmode="decimal" autocomplete="off" placeholder="0">
+        </div>
+
+        <button type="button" id="quickSaveButton" class="quick-save-btn">Add permanently</button>
+        <div id="quickStatus"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const RATE = 0.18;
+
+  const STORAGE_KEYS = {
+    history: 'noonie_proxy_history_v1',
+    quick: 'noonie_proxy_quick_v1'
+  };
+
+  const STANDARD_QUICK_VALUES = [
+    10, 12, 15, 18, 20, 22, 25, 28, 30,
+    32, 35, 38, 40, 42, 45, 48, 50, 55,
+    60, 65, 70, 75, 80, 85, 90, 95, 100
+  ];
+
+  const amountInput = document.getElementById('amount');
+  const resultEl = document.getElementById('result');
+  const exactResultEl = document.getElementById('exactResult');
+  const joiner20El = document.getElementById('joiner20');
+  const joiner25El = document.getElementById('joiner25');
+  const joiner100El = document.getElementById('joiner100');
+  const noteInput = document.getElementById('note');
+  const statusEl = document.getElementById('status');
+  const quickGrid = document.getElementById('quickGrid');
+  const quickAddPanel = document.getElementById('quickAddPanel');
+  const quickCustomInput = document.getElementById('quickCustomInput');
+  const quickStatus = document.getElementById('quickStatus');
+
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('pointerdown', function(event) {
+      event.preventDefault();
+      switchPage(tab.dataset.page);
+    });
+  });
+
+  function switchPage(page) {
+    document.querySelectorAll('.page').forEach(function(el) {
+      el.classList.remove('active');
+    });
+
+    document.querySelectorAll('.tab').forEach(function(el) {
+      el.classList.remove('active');
+    });
+
+    if (page === 'proxy') {
+      document.getElementById('proxyPage').classList.add('active');
+      document.getElementById('proxyTab').classList.add('active');
+      focusProxyInput();
+    }
+
+    if (page === 'calculator') {
+      document.getElementById('calculatorPage').classList.add('active');
+      document.getElementById('calculatorTab').classList.add('active');
+    }
+
+    if (page === 'quick') {
+      document.getElementById('quickPage').classList.add('active');
+      document.getElementById('quickTab').classList.add('active');
+    }
+  }
+
+  amountInput.addEventListener('input', function() {
+    amountInput.value = cleanDecimalInput(amountInput.value);
+    calculateProxy();
+  });
+
+  amountInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      noteInput.focus();
+    }
+  });
+
+  function cleanDecimalInput(value) {
+    value = String(value).replace(/[^0-9,.]/g, '');
+    const firstSeparator = value.search(/[,.]/);
+
+    if (firstSeparator !== -1) {
+      const before = value.substring(0, firstSeparator + 1);
+      const after = value.substring(firstSeparator + 1).replace(/[,.]/g, '');
+      value = before + after;
+    }
+
+    return value;
+  }
+
+  function getAmountNumber() {
+    return Number(amountInput.value.replace(',', '.'));
+  }
+
+  function calculateProxy() {
+    const amount = getAmountNumber();
+
+    if (!Number.isFinite(amount) || amountInput.value === '') {
+      resultEl.textContent = '$0.00';
+      exactResultEl.textContent = '';
+      resetJoinerPrices();
+      return;
+    }
+
+    const result = amount * RATE;
+
+    resultEl.textContent =
+      '$' +
+      result.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+    const exact = result.toFixed(4);
+
+    exactResultEl.textContent =
+      Number(exact) !== Number(result.toFixed(2))
+        ? 'Exact: $' + exact
+        : '';
+
+    updateJoinerPrices(result);
+  }
+
+  function updateJoinerPrices(proxyPrice) {
+    const price20 = proxyPrice + 0.20;
+    const price25 = roundUpToFiveCents(proxyPrice + 0.25);
+    const price100 = proxyPrice + 1;
+
+    joiner20El.textContent = formatEuro(price20);
+    joiner25El.textContent = formatEuro(price25);
+    joiner100El.textContent = formatEuro(price100);
+  }
+
+  function roundUpToFiveCents(value) {
+    return Math.ceil((value * 100 - 0.0000001) / 5) * 5 / 100;
+  }
+
+  function formatEuro(value) {
+    return '€' + Number(value).toFixed(2).replace('.', ',');
+  }
+
+  function resetJoinerPrices() {
+    joiner20El.textContent = '€0,00';
+    joiner25El.textContent = '€0,00';
+    joiner100El.textContent = '€0,00';
+  }
+
+  function focusProxyInput() {
+    try {
+      amountInput.focus({ preventScroll: true });
+    } catch (error) {
+      amountInput.focus();
+    }
+
+    try {
+      const length = amountInput.value.length;
+      amountInput.setSelectionRange(length, length);
+    } catch (error) {}
+  }
+
+  document.getElementById('saveHistoryButton').addEventListener('click', saveCalculation);
+  document.getElementById('newCalculationButton').addEventListener('click', resetProxyCalculator);
+
+  function getHistory() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || '[]');
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function setHistory(items) {
+    localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(items));
+  }
+
+  function saveCalculation() {
+    const amount = getAmountNumber();
+    const note = noteInput.value.trim();
+
+    if (!Number.isFinite(amount) || amountInput.value === '') {
+      showStatus('Enter a CNY amount first.');
+      return;
+    }
+
+    const result = amount * RATE;
+    const items = getHistory();
+
+    items.unshift({
+      id: Date.now(),
+      cny: amount,
+      usd: result,
+      note: note,
+      date: new Date().toLocaleString()
+    });
+
+    setHistory(items.slice(0, 300));
+    showStatus('Saved.');
+    loadHistory();
+  }
+
+  function resetProxyCalculator() {
+    amountInput.value = '';
+    noteInput.value = '';
+    resultEl.textContent = '$0.00';
+    exactResultEl.textContent = '';
+    statusEl.textContent = '';
+    resetJoinerPrices();
+    focusProxyInput();
+  }
+
+  function showStatus(message) {
+    statusEl.textContent = message;
+
+    setTimeout(function() {
+      if (statusEl.textContent === message) {
+        statusEl.textContent = '';
+      }
+    }, 2500);
+  }
+
+  function loadHistory() {
+    renderHistory(getHistory());
+  }
+
+  function renderHistory(items) {
+    const container = document.getElementById('history');
+
+    if (!items.length) {
+      container.innerHTML = '<div class="empty">No saved calculations yet.</div>';
+      return;
+    }
+
+    container.innerHTML = '';
+
+    items.forEach(function(item) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'history-item';
+
+      const cny = Number(item.cny).toLocaleString('en-US', {
+        maximumFractionDigits: 4
+      });
+
+      const usd = Number(item.usd).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      wrapper.innerHTML = `
+        <div class="history-top">
+          <div class="history-calc">
+            ¥${escapeHtml(cny)} → $${escapeHtml(usd)}
+          </div>
+
+          <div class="history-date">
+            ${escapeHtml(item.date)}
+          </div>
+        </div>
+
+        ${
+          item.note
+            ? `<div class="history-note">${escapeHtml(item.note)}</div>`
+            : ''
+        }
+
+        <button
+          type="button"
+          class="delete-btn"
+          data-history-id="${item.id}"
+        >
+          Delete
+        </button>
+      `;
+
+      container.appendChild(wrapper);
+    });
+
+    container.querySelectorAll('[data-history-id]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        deleteHistoryItem(Number(button.dataset.historyId));
+      });
+    });
+  }
+
+  function deleteHistoryItem(id) {
+    const items = getHistory().filter(function(item) {
+      return Number(item.id) !== Number(id);
+    });
+
+    setHistory(items);
+    loadHistory();
+  }
+
+  document.getElementById('clearHistoryButton').addEventListener('click', clearHistory);
+
+  function clearHistory() {
+    if (!confirm('Delete all saved calculator history?')) return;
+    localStorage.removeItem(STORAGE_KEYS.history);
+    loadHistory();
+    showStatus('History cleared.');
+  }
+
+  /* REGULAR CALCULATOR */
+  let calcCurrent = '0';
+  let calcStored = null;
+  let calcOperatorValue = null;
+  let calcWaitingForNext = false;
+
+  const calcResultEl = document.getElementById('calcResult');
+  const calcExpressionEl = document.getElementById('calcExpression');
+
+  document.querySelectorAll('.calc-btn').forEach(function(button) {
+    button.addEventListener(
+      'pointerdown',
+      function(event) {
+        event.preventDefault();
+
+        if (button.dataset.number !== undefined) {
+          calcNumber(button.dataset.number);
+          return;
+        }
+
+        if (button.dataset.operator) {
+          calcOperator(button.dataset.operator);
+          return;
+        }
+
+        const action = button.dataset.calc;
+
+        if (action === 'clear') return calcClear();
+        if (action === 'backspace') return calcBackspace();
+        if (action === 'percent') return calcPercent();
+        if (action === 'sign') return calcToggleSign();
+        if (action === 'decimal') return calcDecimal();
+        if (action === 'equals') return calcEquals();
+      },
+      { passive: false }
+    );
+  });
+
+  function calcNumber(number) {
+    if (calcWaitingForNext) {
+      calcCurrent = number;
+      calcWaitingForNext = false;
+    } else if (calcCurrent === '0') {
+      calcCurrent = number;
+    } else {
+      const digitCount = calcCurrent.replace('-', '').replace('.', '').length;
+      if (digitCount >= 12) return;
+      calcCurrent += number;
+    }
+
+    updateCalcDisplay();
+  }
+
+  function calcDecimal() {
+    if (calcWaitingForNext) {
+      calcCurrent = '0.';
+      calcWaitingForNext = false;
+    } else if (!calcCurrent.includes('.')) {
+      calcCurrent += '.';
+    }
+
+    updateCalcDisplay();
+  }
+
+  function calcToggleSign() {
+    if (calcCurrent === '0') return;
+    calcCurrent = calcCurrent.startsWith('-')
+      ? calcCurrent.substring(1)
+      : '-' + calcCurrent;
+    updateCalcDisplay();
+  }
+
+  function calcClear() {
+    calcCurrent = '0';
+    calcStored = null;
+    calcOperatorValue = null;
+    calcWaitingForNext = false;
+    calcExpressionEl.textContent = '';
+    updateCalcDisplay();
+  }
+
+  function calcBackspace() {
+    if (calcWaitingForNext) return;
+
+    if (calcCurrent.length <= 1 || (calcCurrent.length === 2 && calcCurrent.startsWith('-'))) {
+      calcCurrent = '0';
+    } else {
+      calcCurrent = calcCurrent.slice(0, -1);
+    }
+
+    updateCalcDisplay();
+  }
+
+  function calcPercent() {
+    const number = Number(calcCurrent);
+    if (!Number.isFinite(number)) return;
+    calcCurrent = cleanCalcNumber(number / 100);
+    updateCalcDisplay();
+  }
+
+  function calcOperator(operator) {
+    const currentNumber = Number(calcCurrent);
+    if (!Number.isFinite(currentNumber)) return;
+
+    if (calcStored !== null && calcOperatorValue !== null && !calcWaitingForNext) {
+      const answer = performCalculation(calcStored, currentNumber, calcOperatorValue);
+
+      if (answer === null) {
+        showCalcError();
+        return;
+      }
+
+      calcStored = answer;
+      calcCurrent = cleanCalcNumber(answer);
+    } else {
+      calcStored = currentNumber;
+    }
+
+    calcOperatorValue = operator;
+    calcWaitingForNext = true;
+    calcExpressionEl.textContent = formatCalcNumber(calcStored) + ' ' + operator;
+    updateCalcDisplay();
+  }
+
+  function calcEquals() {
+    if (calcStored === null || calcOperatorValue === null) return;
+
+    const secondNumber = Number(calcCurrent);
+    const firstNumber = calcStored;
+    const operator = calcOperatorValue;
+
+    const answer = performCalculation(firstNumber, secondNumber, operator);
+
+    if (answer === null) {
+      showCalcError();
+      return;
+    }
+
+    calcExpressionEl.textContent =
+      formatCalcNumber(firstNumber) +
+      ' ' +
+      operator +
+      ' ' +
+      formatCalcNumber(secondNumber) +
+      ' =';
+
+    calcCurrent = cleanCalcNumber(answer);
+    calcStored = null;
+    calcOperatorValue = null;
+    calcWaitingForNext = true;
+    updateCalcDisplay();
+  }
+
+  function performCalculation(first, second, operator) {
+    if (operator === '+') return first + second;
+    if (operator === '-') return first - second;
+    if (operator === '×') return first * second;
+    if (operator === '÷') {
+      if (second === 0) return null;
+      return first / second;
+    }
+    return second;
+  }
+
+  function cleanCalcNumber(number) {
+    if (!Number.isFinite(number)) return '0';
+    return String(Number(Number(number).toFixed(10)));
+  }
+
+  function formatCalcNumber(number) {
+    return String(number).replace('.', ',');
+  }
+
+  function updateCalcDisplay() {
+    calcResultEl.textContent = formatCalcNumber(calcCurrent);
+  }
+
+  function showCalcError() {
+    calcCurrent = '0';
+    calcStored = null;
+    calcOperatorValue = null;
+    calcWaitingForNext = false;
+    calcExpressionEl.textContent = 'Cannot divide by zero';
+    updateCalcDisplay();
+  }
+
+  /* QUICK CONVERSIONS */
+  function getCustomQuickValues() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEYS.quick) || '[]');
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function setCustomQuickValues(items) {
+    localStorage.setItem(STORAGE_KEYS.quick, JSON.stringify(items));
+  }
+
+  function loadQuickConversions() {
+    renderQuickConversions();
+  }
+
+  function renderQuickConversions() {
+    const items = [];
+
+    STANDARD_QUICK_VALUES.forEach(function(value) {
+      items.push({
+        cny: value,
+        converted: value * RATE,
+        custom: false,
+        id: null
+      });
+    });
+
+    getCustomQuickValues().forEach(function(item) {
+      const cny = Number(item.cny);
+
+      const duplicate = STANDARD_QUICK_VALUES.some(function(value) {
+        return Math.abs(value - cny) < 0.000001;
+      });
+
+      if (!duplicate) {
+        items.push({
+          cny: cny,
+          converted: cny * RATE,
+          custom: true,
+          id: Number(item.id)
+        });
+      }
+    });
+
+    items.sort(function(a, b) {
+      return a.cny - b.cny;
+    });
+
+    quickGrid.innerHTML = '';
+
+    items.forEach(function(item) {
+      const div = document.createElement('div');
+      div.className = 'quick-item' + (item.custom ? ' custom-quick' : '');
+
+      div.innerHTML = `
+        <div class="quick-left">
+          ¥${escapeHtml(formatQuickAmount(item.cny))}
+        </div>
+
+        <div class="quick-right">
+          €${escapeHtml(Number(item.converted).toFixed(2).replace('.', ','))}
+        </div>
+
+        ${
+          item.custom
+            ? `
+              <button
+                type="button"
+                class="quick-delete"
+                data-quick-id="${item.id}"
+              >
+                ×
+              </button>
+            `
+            : ''
+        }
+      `;
+
+      quickGrid.appendChild(div);
+    });
+
+    quickGrid.querySelectorAll('[data-quick-id]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        deleteCustomQuick(Number(button.dataset.quickId));
+      });
+    });
+  }
+
+  function formatQuickAmount(value) {
+    const number = Number(value);
+    return Number.isInteger(number)
+      ? String(number)
+      : number.toFixed(2).replace('.', ',');
+  }
+
+  document.getElementById('quickAddToggle').addEventListener('click', function() {
+    quickAddPanel.classList.toggle('open');
+
+    if (quickAddPanel.classList.contains('open')) {
+      setTimeout(function() {
+        quickCustomInput.focus();
+      }, 30);
+    }
+  });
+
+  quickCustomInput.addEventListener('input', function() {
+    quickCustomInput.value = cleanDecimalInput(quickCustomInput.value);
+  });
+
+  document.getElementById('quickSaveButton').addEventListener('click', saveCustomQuick);
+
+  function saveCustomQuick() {
+    const amount = Number(quickCustomInput.value.replace(',', '.'));
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      showQuickStatus('Enter a valid CNY amount.');
+      return;
+    }
+
+    const duplicateDefault = STANDARD_QUICK_VALUES.some(function(value) {
+      return Math.abs(value - amount) < 0.000001;
+    });
+
+    const customItems = getCustomQuickValues();
+
+    const duplicateCustom = customItems.some(function(item) {
+      return Math.abs(Number(item.cny) - amount) < 0.000001;
+    });
+
+    if (duplicateDefault || duplicateCustom) {
+      showQuickStatus('That amount is already in the list.');
+      return;
+    }
+
+    customItems.push({
+      id: Date.now(),
+      cny: amount
+    });
+
+    setCustomQuickValues(customItems);
+    quickCustomInput.value = '';
+    showQuickStatus('Added permanently.');
+    renderQuickConversions();
+
+    setTimeout(function() {
+      quickAddPanel.classList.remove('open');
+      quickStatus.textContent = '';
+    }, 800);
+  }
+
+  function deleteCustomQuick(id) {
+    if (!confirm('Delete this custom quick conversion?')) return;
+
+    const items = getCustomQuickValues().filter(function(item) {
+      return Number(item.id) !== Number(id);
+    });
+
+    setCustomQuickValues(items);
+    renderQuickConversions();
+  }
+
+  function showQuickStatus(message) {
+    quickStatus.textContent = message;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  calculateProxy();
+  updateCalcDisplay();
+  loadHistory();
+  loadQuickConversions();
+
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      focusProxyInput();
+    }, 120);
+  });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./sw.js').catch(function(error) {
+        console.log('Service worker registration failed:', error);
+      });
+    });
+  }
+</script>
+</body>
+</html>

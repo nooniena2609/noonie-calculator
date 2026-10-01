@@ -657,7 +657,25 @@
         padding-right: 9px;
       }
     }
-  </style>
+  
+/* Two equal proxy columns retain the original colors and typeface. */
+.proxy-comparison { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; align-items:start; }
+.proxy-column { min-width:0; }
+.proxy-column .rate { margin:14px 0 10px; font-size:clamp(14px,3vw,23px); }
+.proxy-column .result-box { padding:20px 6px; }
+.proxy-comparison #result, .proxy-comparison #resultB { font-size:clamp(27px,7vw,64px); font-weight:900; line-height:1.1; overflow-wrap:anywhere; }
+.proxy-comparison #exactResult, .proxy-comparison #exactB { font-size:12px; min-height:16px; margin-top:5px; }
+.proxy-column .joiner-title { font-size:clamp(14px,2.6vw,22px); }
+.proxy-column .joiner-grid { gap:5px; }
+.proxy-column .joiner-box { padding:12px 2px; border-radius:14px; }
+.proxy-column .joiner-value { font-size:clamp(13px,3.4vw,30px); overflow-wrap:anywhere; }
+.proxy-column .joiner-fee { font-size:clamp(10px,1.7vw,14px); }
+.proxy-column .joiner-note { font-size:9px; }
+label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:900; margin:10px 0 6px; }
+#historyProxy { width:100%; font:inherit; color:var(--burgundy); background:var(--soft); border:2px solid var(--light-pink); border-radius:14px; padding:12px; margin-bottom:16px; }
+@media(max-width:420px) { .proxy-comparison { gap:8px; } .proxy-column .joiner-grid { gap:3px; } }
+
+</style>
 </head>
 
 <body>
@@ -670,7 +688,7 @@
 
   <div id="proxyPage" class="page active">
     <div class="title">𓏸𓈒꒰ঌ Proxy Calculator ໒꒱𓈒𓏸</div>
-    <div class="subtitle">CNY × 0.18 = USD</div>
+    <div class="subtitle">Proxy A × 0.18 · Proxy B × 0.172</div>
 
     <div class="card">
       <div class="label">CNY amount</div>
@@ -682,37 +700,9 @@
         </div>
       </div>
 
-      <div class="rate">× 0.18</div>
-
-      <div class="result-box">
-        <div class="result-label">Amount to pay</div>
-        <div id="result">$0.00</div>
-        <div id="exactResult"></div>
-      </div>
-
-      <div class="joiner-title">Suggested Joiner Price</div>
-
-      <div class="joiner-grid">
-        <div class="joiner-box">
-          <div class="joiner-fee">+ €0,20</div>
-          <div id="joiner20" class="joiner-value">€0,00</div>
-          <div class="joiner-note">exact</div>
-        </div>
-
-        <div class="joiner-box">
-          <div class="joiner-fee">+ €0,25</div>
-          <div id="joiner25" class="joiner-value">€0,00</div>
-          <div class="joiner-note">rounded up</div>
-        </div>
-
-        <div class="joiner-box">
-          <div class="joiner-fee">+ €1,00</div>
-          <div id="joiner100" class="joiner-value">€0,00</div>
-          <div class="joiner-note">exact</div>
-        </div>
-      </div>
-
-      <div class="label">Note</div>
+      <div class="proxy-comparison"><section class="proxy-column" aria-label="Proxy B"><div class="rate">Proxy B · × 0.172</div><div class="result-box"><div class="result-label">Amount to pay</div><div id="resultB" class="proxy-result">$0.00</div><div id="exactB" class="proxy-exact"></div></div><div class="joiner-title">Suggested Joiner Price</div><div class="joiner-grid"><div class="joiner-box"><div class="joiner-fee">+ €0,20</div><div id="b20" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div><div class="joiner-box"><div class="joiner-fee">+ €0,30</div><div id="b30" class="joiner-value">€0,00</div><div class="joiner-note">rounded up</div></div><div class="joiner-box"><div class="joiner-fee">+ €1,00</div><div id="b100" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div></div></section><section class="proxy-column" aria-label="Proxy A"><div class="rate">Proxy A · × 0.18</div><div class="result-box"><div class="result-label">Amount to pay</div><div id="result" class="proxy-result">$0.00</div><div id="exactResult" class="proxy-exact"></div></div><div class="joiner-title">Suggested Joiner Price</div><div class="joiner-grid"><div class="joiner-box"><div class="joiner-fee">+ €0,20</div><div id="joiner20" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div><div class="joiner-box"><div class="joiner-fee">+ €0,30</div><div id="joiner25" class="joiner-value">€0,00</div><div class="joiner-note">rounded up</div></div><div class="joiner-box"><div class="joiner-fee">+ €1,00</div><div id="joiner100" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div></div></section></div>
+<label for="historyProxy">Save history for</label><select id="historyProxy"><option value="A">Proxy A</option><option value="B">Proxy B</option></select>
+ <div class="label">Note</div>
       <textarea id="note" placeholder="Example: Batch 76 / proxy payment / items..."></textarea>
 
       <button type="button" class="wide-button save" id="saveHistoryButton">Save to history</button>
@@ -726,7 +716,7 @@
       <button type="button" class="wide-button secondary" id="clearHistoryButton">Clear all history</button>
     </div>
 
-    <div class="tiny">Proxy rate: × 0.18</div>
+    <div class="tiny">Proxy A: × 0.18 · Proxy B: × 0.172</div>
   </div>
 
   <div id="calculatorPage" class="page">
@@ -768,7 +758,7 @@
   <div id="quickPage" class="page">
     <div class="quick-header">
       <div class="quick-title">Quick Conversions</div>
-      <div class="quick-subtitle">CNY × 0.18</div>
+      <div class="quick-subtitle">Proxy A × 0.18 · Proxy B × 0.172</div>
     </div>
 
     <div id="quickGrid" class="quick-grid"></div>
@@ -879,6 +869,7 @@
   }
 
   function calculateProxy() {
+    calculateProxyB();
     const amount = getAmountNumber();
 
     if (!Number.isFinite(amount) || amountInput.value === '') {
@@ -909,7 +900,7 @@
 
   function updateJoinerPrices(proxyPrice) {
     const price20 = proxyPrice + 0.20;
-    const price25 = roundUpToFiveCents(proxyPrice + 0.25);
+    const price25 = roundUpToFiveCents(proxyPrice + 0.30);
     const price100 = proxyPrice + 1;
 
     joiner20El.textContent = formatEuro(price20);
@@ -969,13 +960,14 @@
       return;
     }
 
-    const result = amount * RATE;
+    const result = amount * (document.getElementById('historyProxy').value === 'B' ? 0.172 : RATE);
     const items = getHistory();
 
     items.unshift({
       id: Date.now(),
       cny: amount,
       usd: result,
+      proxy: document.getElementById('historyProxy').value,
       note: note,
       date: new Date().toLocaleString()
     });
@@ -986,6 +978,7 @@
   }
 
   function resetProxyCalculator() {
+    resetProxyB();
     amountInput.value = '';
     noteInput.value = '';
     resultEl.textContent = '$0.00';
@@ -1035,7 +1028,7 @@
       wrapper.innerHTML = `
         <div class="history-top">
           <div class="history-calc">
-            ¥${escapeHtml(cny)} → $${escapeHtml(usd)}
+            Proxy ${escapeHtml(item.proxy || 'A')} · ¥${escapeHtml(cny)} → $${escapeHtml(usd)}
           </div>
 
           <div class="history-date">
@@ -1334,9 +1327,7 @@
           ¥${escapeHtml(formatQuickAmount(item.cny))}
         </div>
 
-        <div class="quick-right">
-          €${escapeHtml(Number(item.converted).toFixed(2).replace('.', ','))}
-        </div>
+        <div class="quick-right">A: ${escapeHtml(formatEuro(Number(item.cny) * 0.18))}<br>B: ${escapeHtml(formatEuro(Number(item.cny) * 0.172))}</div>
 
         ${
           item.custom
@@ -1467,6 +1458,18 @@
       });
     });
   }
+
+ function resetProxyB() { ['resultB','b20','b30','b100'].forEach(id => document.getElementById(id).textContent = id === 'resultB' ? '$0.00' : '€0,00'); document.getElementById('exactB').textContent = ''; }
+ function calculateProxyB() {
+ const amount = getAmountNumber(); if (!Number.isFinite(amount) || amountInput.value === '') { resetProxyB(); return; }
+ const result = amount * 0.172;
+ document.getElementById('resultB').textContent = '$' + result.toFixed(2);
+ document.getElementById('exactB').textContent = Number(result.toFixed(4)) !== Number(result.toFixed(2)) ? 'Exact: $' + result.toFixed(4) : '';
+ document.getElementById('b20').textContent = formatEuro(result + 0.20);
+ document.getElementById('b30').textContent = formatEuro(roundUpToFiveCents(result + 0.30));
+ document.getElementById('b100').textContent = formatEuro(result + 1);
+ }
+ 
 </script>
 </body>
 </html>

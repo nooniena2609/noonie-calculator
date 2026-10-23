@@ -675,6 +675,19 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
 #historyProxy { width:100%; font:inherit; color:var(--burgundy); background:var(--soft); border:2px solid var(--light-pink); border-radius:14px; padding:12px; margin-bottom:16px; }
 @media(max-width:420px) { .proxy-comparison { gap:8px; } .proxy-column .joiner-grid { gap:3px; } }
 
+
+@media (max-width: 767px) {
+  .proxy-column .joiner-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+  .proxy-column .joiner-box { container-type: inline-size; }
+  .proxy-column .joiner-value {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    text-align: center;
+    font-size: min(3.4vw, 18px);
+    font-size: min(3.4vw, 18px, 20cqi);
+  }
+}
+
 </style>
 </head>
 

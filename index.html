@@ -684,7 +684,7 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
     overflow-wrap: normal;
     text-align: center;
     font-size: min(3.4vw, 18px);
-    font-size: min(3.4vw, 18px, 20cqi);
+    font-size: min(3.4vw, 18px, calc(140cqi / var(--price-length, 8)));
   }
 }
 
@@ -1483,6 +1483,17 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
  document.getElementById('b100').textContent = formatEuro(result + 1);
  }
  
+</script>
+
+<script>
+  // Fit mobile price text without changing the calculated values.
+  document.querySelectorAll('.joiner-value').forEach(function(price) {
+    function sizePrice() {
+      price.style.setProperty('--price-length', price.textContent.length);
+    }
+    new MutationObserver(sizePrice).observe(price, { childList: true, characterData: true, subtree: true });
+    sizePrice();
+  });
 </script>
 </body>
 </html>

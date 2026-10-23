@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noonie-proxy-calc-v5';
+const CACHE_NAME = 'noonie-proxy-calc-v6';
 
 const APP_FILES = [
   './',

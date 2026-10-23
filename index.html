@@ -688,7 +688,7 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
 
   <div id="proxyPage" class="page active">
     <div class="title">𓏸𓈒꒰ঌ Proxy Calculator ໒꒱𓈒𓏸</div>
-    <div class="subtitle">Proxy A × 0.18 · Proxy B × 0.172</div>
+    <div class="subtitle">Proxy A × 0.175 · Proxy B × 0.172</div>
 
     <div class="card">
       <div class="label">CNY amount</div>
@@ -700,7 +700,7 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
         </div>
       </div>
 
-      <div class="proxy-comparison"><section class="proxy-column" aria-label="Proxy B"><div class="rate">Proxy B · × 0.172</div><div class="result-box"><div class="result-label">Amount to pay</div><div id="resultB" class="proxy-result">$0.00</div><div id="exactB" class="proxy-exact"></div></div><div class="joiner-title">Suggested Joiner Price</div><div class="joiner-grid"><div class="joiner-box"><div class="joiner-fee">+ €0,20</div><div id="b20" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div><div class="joiner-box"><div class="joiner-fee">+ €0,30</div><div id="b30" class="joiner-value">€0,00</div><div class="joiner-note">rounded up</div></div><div class="joiner-box"><div class="joiner-fee">+ €1,00</div><div id="b100" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div></div></section><section class="proxy-column" aria-label="Proxy A"><div class="rate">Proxy A · × 0.18</div><div class="result-box"><div class="result-label">Amount to pay</div><div id="result" class="proxy-result">$0.00</div><div id="exactResult" class="proxy-exact"></div></div><div class="joiner-title">Suggested Joiner Price</div><div class="joiner-grid"><div class="joiner-box"><div class="joiner-fee">+ €0,20</div><div id="joiner20" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div><div class="joiner-box"><div class="joiner-fee">+ €0,30</div><div id="joiner25" class="joiner-value">€0,00</div><div class="joiner-note">rounded up</div></div><div class="joiner-box"><div class="joiner-fee">+ €1,00</div><div id="joiner100" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div></div></section></div>
+      <div class="proxy-comparison"><section class="proxy-column" aria-label="Proxy B"><div class="rate">Proxy B · × 0.172</div><div class="result-box"><div class="result-label">Amount to pay</div><div id="resultB" class="proxy-result">$0.00</div><div id="exactB" class="proxy-exact"></div></div><div class="joiner-title">Suggested Joiner Price</div><div class="joiner-grid"><div class="joiner-box"><div class="joiner-fee">+ €0,20</div><div id="b20" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div><div class="joiner-box"><div class="joiner-fee">+ €0,30</div><div id="b30" class="joiner-value">€0,00</div><div class="joiner-note">rounded up</div></div><div class="joiner-box"><div class="joiner-fee">+ €1,00</div><div id="b100" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div></div></section><section class="proxy-column" aria-label="Proxy A"><div class="rate">Proxy A · × 0.175</div><div class="result-box"><div class="result-label">Amount to pay</div><div id="result" class="proxy-result">$0.00</div><div id="exactResult" class="proxy-exact"></div></div><div class="joiner-title">Suggested Joiner Price</div><div class="joiner-grid"><div class="joiner-box"><div class="joiner-fee">+ €0,25</div><div id="joiner20" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div><div class="joiner-box"><div class="joiner-fee">+ €0,30</div><div id="joiner25" class="joiner-value">€0,00</div><div class="joiner-note">rounded up</div></div><div class="joiner-box"><div class="joiner-fee">+ €0,35</div><div id="joiner100" class="joiner-value">€0,00</div><div class="joiner-note">exact</div></div></div></section></div>
 <label for="historyProxy">Save history for</label><select id="historyProxy"><option value="A">Proxy A</option><option value="B">Proxy B</option></select>
  <div class="label">Note</div>
       <textarea id="note" placeholder="Example: Batch 76 / proxy payment / items..."></textarea>
@@ -716,7 +716,7 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
       <button type="button" class="wide-button secondary" id="clearHistoryButton">Clear all history</button>
     </div>
 
-    <div class="tiny">Proxy A: × 0.18 · Proxy B: × 0.172</div>
+    <div class="tiny">Proxy A: × 0.175 · Proxy B: × 0.172</div>
   </div>
 
   <div id="calculatorPage" class="page">
@@ -758,7 +758,7 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
   <div id="quickPage" class="page">
     <div class="quick-header">
       <div class="quick-title">Quick Conversions</div>
-      <div class="quick-subtitle">Proxy A × 0.18 · Proxy B × 0.172</div>
+      <div class="quick-subtitle">Proxy A × 0.175 · Proxy B × 0.172</div>
     </div>
 
     <div id="quickGrid" class="quick-grid"></div>
@@ -780,7 +780,7 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
 </div>
 
 <script>
-  const RATE = 0.18;
+  const RATE = 0.175;
 
   const STORAGE_KEYS = {
     history: 'noonie_proxy_history_v1',
@@ -899,9 +899,9 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
   }
 
   function updateJoinerPrices(proxyPrice) {
-    const price20 = proxyPrice + 0.20;
+    const price20 = proxyPrice + 0.25;
     const price25 = roundUpToFiveCents(proxyPrice + 0.30);
-    const price100 = proxyPrice + 1;
+    const price100 = proxyPrice + 0.35;
 
     joiner20El.textContent = formatEuro(price20);
     joiner25El.textContent = formatEuro(price25);
@@ -1327,7 +1327,7 @@ label[for="historyProxy"] { display:block; color:var(--burgundy); font-weight:90
           ¥${escapeHtml(formatQuickAmount(item.cny))}
         </div>
 
-        <div class="quick-right">A: ${escapeHtml(formatEuro(Number(item.cny) * 0.18))}<br>B: ${escapeHtml(formatEuro(Number(item.cny) * 0.172))}</div>
+        <div class="quick-right">A: ${escapeHtml(formatEuro(Number(item.cny) * 0.175))}<br>B: ${escapeHtml(formatEuro(Number(item.cny) * 0.172))}</div>
 
         ${
           item.custom
